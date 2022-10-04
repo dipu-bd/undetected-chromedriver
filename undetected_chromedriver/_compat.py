@@ -28,7 +28,8 @@ import zipfile
 from distutils.version import LooseVersion
 from urllib.request import urlopen, urlretrieve
 
-from selenium.webdriver import Chrome as _Chrome, ChromeOptions as _ChromeOptions
+from selenium.webdriver import Chrome as _Chrome
+from selenium.webdriver import ChromeOptions as _ChromeOptions
 
 TARGET_VERSION = 0
 logger = logging.getLogger("uc")
@@ -58,20 +59,17 @@ class Chrome:
                     "Page.addScriptToEvaluateOnNewDocument",
                     {
                         "source": """
-
-                                   Object.defineProperty(window, 'navigator', {
-                                       value: new Proxy(navigator, {
-                                       has: (target, key) => (key === 'webdriver' ? false : key in target),
-                                       get: (target, key) =>
-                                           key === 'webdriver'
-                                           ? undefined
-                                           : typeof target[key] === 'function'
-                                           ? target[key].bind(target)
-                                           : target[key]
-                                       })
-                                   });
-                                    
-                                                            
+                            Object.defineProperty(window, 'navigator', {
+                                value: new Proxy(navigator, {
+                                has: (target, key) => (key === 'webdriver' ? false : key in target),
+                                get: (target, key) =>
+                                    key === 'webdriver'
+                                    ? undefined
+                                    : typeof target[key] === 'function'
+                                    ? target[key].bind(target)
+                                    : target[key]
+                                })
+                            });
                         """
                     },
                 )
@@ -95,9 +93,10 @@ class Chrome:
                 "Page.addScriptToEvaluateOnNewDocument",
                 {
                     "source": """
-                                   Object.defineProperty(navigator, 'maxTouchPoints', {
-                                       get: () => 1
-                               })"""
+                        Object.defineProperty(navigator, 'maxTouchPoints', {
+                            get: () => 1
+                        })
+                    """
                 },
             )
         logger.info(f"starting undetected_chromedriver.Chrome({args}, {kwargs})")
@@ -165,8 +164,8 @@ class ChromeDriverManager(object):
 
         :return:
         """
-        import selenium.webdriver.chrome.service
         import selenium.webdriver
+        import selenium.webdriver.chrome.service
 
         selenium.webdriver.Chrome = Chrome
         selenium.webdriver.ChromeOptions = ChromeOptions

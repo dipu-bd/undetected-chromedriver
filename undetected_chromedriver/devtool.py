@@ -1,17 +1,11 @@
 import asyncio
 import logging
+import threading
 import time
 import traceback
-from collections.abc import Mapping
-from collections.abc import Sequence
-from typing import Any
-from typing import Awaitable
-from typing import Callable
-from typing import List
-from typing import Optional
-from contextlib import ExitStack
-import threading
-from functools import wraps, partial
+from collections.abc import Mapping, Sequence
+from functools import wraps
+from typing import Any, Awaitable, Callable, List, Optional
 
 
 class Structure(dict):
@@ -90,7 +84,7 @@ def timeout(seconds=3, on_timeout: Optional[Callable[[callable], Any]] = None):
             t.start()
             try:
                 return func(*args, **kwargs)
-            except:
+            except Exception:
                 t.cancel()
                 raise
             finally:
@@ -102,11 +96,13 @@ def timeout(seconds=3, on_timeout: Optional[Callable[[callable], Any]] = None):
 
 
 def test():
-    import sys, os
+    import os
+    import sys
 
     sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
-    import undetected_chromedriver as uc
     import threading
+
+    import undetected_chromedriver as uc
 
     def collector(
         driver: uc.Chrome,
@@ -136,13 +132,13 @@ def test():
                         for _ in listen_events:
                             try:
                                 log_lines += await get_log_lines(_)
-                            except:
+                            except Exception:
                                 if logging.getLogger().getEffectiveLevel() <= 10:
                                     traceback.print_exc()
                                 continue
                         if log_lines and on_event_coro:
                             await on_event_coro(log_lines)
-                    except Exception as e:
+                    except Exception:
                         if logging.getLogger().getEffectiveLevel() <= 10:
                             traceback.print_exc()
 

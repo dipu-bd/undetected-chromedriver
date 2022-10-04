@@ -10,8 +10,12 @@ logger = logging.getLogger(__name__)
 
 
 class Reactor(threading.Thread):
-    def __init__(self, driver: "Chrome"):
+    def __init__(self, driver):
         super().__init__()
+
+        from . import Chrome
+
+        assert isinstance(driver, Chrome)
 
         self.driver = driver
         self.loop = asyncio.new_event_loop()

@@ -19,11 +19,11 @@ class WebElement(selenium.webdriver.remote.webelement.WebElement):
         if not hasattr(self, "_attrs"):
             self._attrs = self._parent.execute_script(
                 """
-                var items = {}; 
-                for (index = 0; index < arguments[0].attributes.length; ++index) 
+                var items = {};
+                for (index = 0; index < arguments[0].attributes.length; ++index)
                 {
-                 items[arguments[0].attributes[index].name] = arguments[0].attributes[index].value 
-                }; 
+                    items[arguments[0].attributes[index].name] = arguments[0].attributes[index].value
+                };
                 return items;
                 """,
                 self,

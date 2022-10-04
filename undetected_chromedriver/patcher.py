@@ -6,14 +6,13 @@ import logging
 import os
 import random
 import re
+import secrets
 import string
 import sys
 import time
 import zipfile
 from distutils.version import LooseVersion
 from urllib.request import urlopen, urlretrieve
-import secrets
-
 
 logger = logging.getLogger(__name__)
 

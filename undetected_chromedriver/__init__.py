@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-import subprocess
-
 """
 
          888                                                  888         d8b
@@ -27,11 +25,10 @@ import logging
 import os
 import re
 import shutil
+import subprocess
 import sys
 import tempfile
 import time
-import inspect
-import threading
 
 import selenium.webdriver.chrome.service
 import selenium.webdriver.chrome.webdriver
@@ -39,11 +36,10 @@ import selenium.webdriver.common.service
 import selenium.webdriver.remote.webdriver
 
 from .cdp import CDP
-from .options import ChromeOptions
-from .patcher import IS_POSIX
-from .patcher import Patcher
-from .reactor import Reactor
 from .dprocess import start_detached
+from .options import ChromeOptions
+from .patcher import IS_POSIX, Patcher
+from .reactor import Reactor
 
 __all__ = (
     "Chrome",
@@ -119,7 +115,7 @@ class Chrome(selenium.webdriver.chrome.webdriver.WebDriver):
         suppress_welcome=True,
         use_subprocess=False,
         debug=False,
-        **kw
+        **kw,
     ):
         """
         Creates a new instance of the chrome driver.
@@ -235,7 +231,6 @@ class Chrome(selenium.webdriver.chrome.webdriver.WebDriver):
         if not options:
             options = ChromeOptions()
 
-
         try:
             if hasattr(options, "_session") and options._session is not None:
                 #  prevent reuse of options,
@@ -262,7 +257,7 @@ class Chrome(selenium.webdriver.chrome.webdriver.WebDriver):
         options.add_argument("--remote-debugging-port=%s" % debug_port)
 
         if user_data_dir:
-            options.add_argument('--user-data-dir=%s' % user_data_dir)
+            options.add_argument("--user-data-dir=%s" % user_data_dir)
 
         language, keep_user_data_dir = None, bool(user_data_dir)
 
@@ -359,7 +354,7 @@ class Chrome(selenium.webdriver.chrome.webdriver.WebDriver):
             or divmod(logging.getLogger().getEffectiveLevel(), 10)[0]
         )
 
-        if hasattr(options, 'handle_prefs'):
+        if hasattr(options, "handle_prefs"):
             options.handle_prefs(user_data_dir)
 
         # fix exit_type flag to prevent tab-restore nag
@@ -376,8 +371,8 @@ class Chrome(selenium.webdriver.chrome.webdriver.WebDriver):
                 fs.seek(0, 0)
                 json.dump(config, fs)
                 logger.debug("fixed exit_type flag")
-        except Exception as e:
-            logger.debug("did not find a bad exit_type flag ")
+        except Exception:
+            logger.debug("did not find a bad exit_type flag")
 
         self.options = options
 
@@ -520,7 +515,7 @@ class Chrome(selenium.webdriver.chrome.webdriver.WebDriver):
                 "source": """
                     let objectToInspect = window,
                         result = [];
-                    while(objectToInspect !== null) 
+                    while(objectToInspect !== null)
                     { result = result.concat(Object.getOwnPropertyNames(objectToInspect));
                       objectToInspect = Object.getPrototypeOf(objectToInspect); }
                     result.forEach(p => p.match(/.+_.+_(Array|Promise|Symbol)/ig)

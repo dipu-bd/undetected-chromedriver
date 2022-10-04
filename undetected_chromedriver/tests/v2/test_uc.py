@@ -1,6 +1,6 @@
 import pytest
-from _pytest.fixtures import FixtureRequest
 import undetected_chromedriver as uc
+from _pytest.fixtures import FixtureRequest
 
 FAILED_SCREENSHOT_NAME = "failed.png"
 
